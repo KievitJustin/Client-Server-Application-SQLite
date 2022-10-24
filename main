@@ -1,0 +1,125 @@
+#I decided to have one if-else block execute a majority of the code.
+#With just one if-else block, the code is modular and easier to read.
+#The functions that are included in the main file are functions
+#that obtain input from the user for a function to be executed.
+#If the user chooses a specific selection from the menu
+#that requires input, the function will "prompt" them
+#to enter something, which is why the functions inside
+#the main file have the word "prompt" infront of them.
+#Separting my prompt functions and database functions between
+#files shows my separation of concers - allowing future
+#programmers who read this file to understand why
+#there is not just one file that containts functions,
+#because the prompt functions prompt the user for input.
+#I should have set aside more time for this project,
+#because I ended up not being able to include everything I intended.
+#For example, if I had set aside more time, I would have separated
+# the tables into individual categories, such as items - which would include the tool name,
+# the tool category, the tool manufacturer, and the tool price. The second
+# category would have been deliveries, which would have included the item name,
+# the delivery date, the delivery person, and the delivery number. The third
+# table would have been manufacturers, and would have included the item name,
+# the item manufacturer, the manufacturer delivery dates, and the manufacturer
+# address. I was actually able to do this, but I realized that it messed up my entire "View all"
+# function, so I reverted it back to the first iteration I made. I plan on cleaning this
+# database up for my GitHub to where each table only obtains columns that
+# relate to the table name.
+
+
+
+import datetime
+import database
+
+menu = '''\nPlease select an option
+1.) Add an item.
+2.) Remove an item.
+3.) View all items. 
+4.) View sold out items. 
+5.) Search for an item. 
+6.) Update item delivery information. 
+7. Exit. 
+
+Your selection: 
+'''
+welcome = "Welcome to Justin's Inventory Database!"
+
+
+def prompt_change_delivery_person():
+    name = input("Choose item: ")
+    deliveryperson = input("Enter new courier: ")
+    phonenumber = input("Enter courier phone number: ")
+
+    database.update_delivery_person(name, deliveryperson, phonenumber)
+    print(f"{deliveryperson} new courier for {name}")
+
+def prompt_add_item():
+    name = input("Item name: ")
+    manufacturer = input("Item manufacturer: ")
+    category = input("Item category: ")
+    price = input("Item price: $")
+    deliveryperson = input("Item courier (last name): ")
+    deliverydate = input("Delivery date (mm-dd-YYYY): ")
+    try:
+        date_object = datetime.datetime.strptime(deliverydate, "%m-%d-%Y")
+        delivery_timestamp = date_object.timestamp()
+    except ValueError:
+        print("Invalid format. Please try again.")
+        return None
+
+    database.add_item(name, manufacturer, category, price, deliveryperson, delivery_timestamp)
+    database.add_manu(manufacturer, deliverydate)
+    database.add_delivery(name, deliveryperson)
+    # add here
+    print(f"One {manufacturer} {name} has been added.")
+
+
+def prompt_item_search():
+    choice = input("Search item by\n1.) Name or \n2.) Category\nEnter 1 or 2: ")
+    if choice == "1":
+            name = input("Enter item name: ")
+            database.name_search(name)
+    elif choice == "2":
+        category = input("Enter item category: ")
+        database.category_search(category)
+    else:
+        print("Invalid entry.")
+
+def prompt_remove_item():
+    name = input("Item name: ")
+    database.remove_item(name)
+    print(f"{name} has been removed!")
+
+def print_item_list(header, items):
+    print(f"-----{header}------")
+    for item in items:
+        date_object = datetime.datetime.fromtimestamp(item[5])
+        human_readable = date_object.strftime("%b %d %Y")
+        print(f"{item[1]} {item[0]}. Delivery by {item[4]} on date: ({human_readable})\n")
+    print("----------")
+
+
+
+database.create_tables()
+print(welcome)
+
+while (user_input := input(menu)) != "7":
+    if user_input == "1":
+        prompt_add_item()
+    elif user_input == "2":
+        pass
+        prompt_remove_item()
+    elif user_input == "3":
+        all_items = database.view_items()
+        print_item_list("All items", all_items)
+    elif user_input == "4":
+        upcoming_items = database.view_items(upcoming=True)
+        print_item_list("Out of stock", upcoming_items)
+    elif user_input == "5":
+        prompt_item_search()
+    elif user_input =='6':
+        prompt_change_delivery_person()
+    elif user_input == '7':
+        print("Exiting...")
+    else:
+        print("Invalid input. please try again.")
+
