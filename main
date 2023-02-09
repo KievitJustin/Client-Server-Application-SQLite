@@ -1,32 +1,3 @@
-#I decided to have one if-else block execute a majority of the code.
-#With just one if-else block, the code is modular and easier to read.
-#The functions that are included in the main file are functions
-#that obtain input from the user for a function to be executed.
-#If the user chooses a specific selection from the menu
-#that requires input, the function will "prompt" them
-#to enter something, which is why the functions inside
-#the main file have the word "prompt" infront of them.
-#Separting my prompt functions and database functions between
-#files shows my separation of concers - allowing future
-#programmers who read this file to understand why
-#there is not just one file that containts functions,
-#because the prompt functions prompt the user for input.
-#I should have set aside more time for this project,
-#because I ended up not being able to include everything I intended.
-#For example, if I had set aside more time, I would have separated
-# the tables into individual categories, such as items - which would include the tool name,
-# the tool category, the tool manufacturer, and the tool price. The second
-# category would have been deliveries, which would have included the item name,
-# the delivery date, the delivery person, and the delivery number. The third
-# table would have been manufacturers, and would have included the item name,
-# the item manufacturer, the manufacturer delivery dates, and the manufacturer
-# address. I was actually able to do this, but I realized that it messed up my entire "View all"
-# function, so I reverted it back to the first iteration I made. I plan on cleaning this
-# database up for my GitHub to where each table only obtains columns that
-# relate to the table name.
-
-
-
 import datetime
 import database
 
